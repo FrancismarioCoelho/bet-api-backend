@@ -1,9 +1,9 @@
 /*==============================================================*/
-/* TABLE: CONECTA_ROLE                                          */
+/* TABLE: TB_ROLE                                               */
 /*==============================================================*/
-CREATE TABLE IF NOT EXISTS tb_role(
-     id SERIAL NOT NULL,
-     description VARCHAR(100) NOT NULL,
-     PRIMARY KEY(ID)
+CREATE TABLE IF NOT EXISTS TB_ROLE(
+     ID SERIAL NOT NULL,
+     DESCRIPTION VARCHAR(100) NOT NULL,
+     CONSTRAINT PK_ROLE PRIMARY KEY(ID)
 );
 
