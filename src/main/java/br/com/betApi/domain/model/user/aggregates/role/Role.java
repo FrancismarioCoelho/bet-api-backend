@@ -1,4 +1,4 @@
-package br.com.betApi.domain.model.user.aggregates;
+package br.com.betApi.domain.model.user.aggregates.role;
 
 
 import jakarta.persistence.*;

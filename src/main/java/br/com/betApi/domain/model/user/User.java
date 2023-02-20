@@ -1,6 +1,6 @@
 package br.com.betApi.domain.model.user;
 
-import br.com.betApi.domain.model.user.aggregates.Role;
+import br.com.betApi.domain.model.user.aggregates.role.Role;
 import br.com.betApi.domain.objectValues.enums.StatusUser;
 import jakarta.persistence.*;
 import lombok.Getter;
