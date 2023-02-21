@@ -1,9 +1,13 @@
 package br.com.betApi.domain.objectValues.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusPayment {
 
-
-    APPROVED("A"),DISAPPROVED("D"),WAITING("W");
+    APPROVED("A"),
+    DISAPPROVED("D"),
+    WAITING("W");
 
     private String description;
 
