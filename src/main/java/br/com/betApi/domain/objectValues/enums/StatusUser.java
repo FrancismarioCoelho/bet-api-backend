@@ -1,5 +1,8 @@
 package br.com.betApi.domain.objectValues.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusUser {
 
     ATIVO("A"),
