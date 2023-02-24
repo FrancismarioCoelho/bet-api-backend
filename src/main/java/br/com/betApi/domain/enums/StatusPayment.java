@@ -1,4 +1,4 @@
-package br.com.betApi.domain.objectValues.enums;
+package br.com.betApi.domain.enums;
 
 import lombok.Getter;
 

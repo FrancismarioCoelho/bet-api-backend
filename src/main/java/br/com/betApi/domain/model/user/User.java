@@ -1,18 +1,22 @@
 package br.com.betApi.domain.model.user;
 
+import br.com.betApi.domain.enums.StatusUser;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
-import br.com.betApi.domain.objectValues.enums.StatusUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Setter
 @Getter
 @Entity
 @Table(name = "tb_user")
-public class User {
+public class User implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -28,10 +32,23 @@ public class User {
     @Column(name = "createAt")
     private LocalDateTime createAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusUser status;
 
-    @OneToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
+    @JoinColumn(name = "user_id")
+    private List<Role> roles;
+
+    public User() {
+    }
+
+    public User(String email, String password, LocalDateTime createAt, StatusUser status, List<Role> roles) {
+        this.email = email;
+        this.password = password;
+        this.createAt = createAt;
+        this.status = status;
+        this.roles = roles;
+    }
 }
