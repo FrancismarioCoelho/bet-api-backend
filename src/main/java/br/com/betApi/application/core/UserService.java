@@ -4,6 +4,7 @@ import br.com.betApi.application.shared.dto.FilterDto;
 import br.com.betApi.application.shared.dto.UserDto;
 import br.com.betApi.application.shared.function.Functions;
 import br.com.betApi.application.shared.mapper.GenericObjectMapper;
+import br.com.betApi.application.shared.util.Util;
 import br.com.betApi.domain.model.user.User;
 import br.com.betApi.domain.vo.IUserServiceImpl;
 import br.com.betApi.infrastructure.repository.IUserRepositoryImpl;
@@ -25,10 +26,9 @@ public class UserService implements IUserServiceImpl {
 
 
     @Override
-    public UserDto findById(Long id) {
-        User userDatabase = this.userRepository.findById(id)
+    public UserDto findById(Long id) {User userDatabase = this.userRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("Entity not found!"));
-        return this.mapper.mapTo(userDatabase, UserDto.class);
+        return Util.mapTo(userDatabase, new UserDto());
     }
 
     @Override
@@ -39,7 +39,7 @@ public class UserService implements IUserServiceImpl {
                         filterDto.getEmail(),
                         filterDto.getRoles(),
                         pageable);
-        return this.mapper.mapToPageable(userDatabase, UserDto.class);
+        return Util.mapToPageable(userDatabase, new UserDto());
     }
 
 
@@ -47,17 +47,18 @@ public class UserService implements IUserServiceImpl {
     public UserDto save(UserDto userDto) {
      return  Functions.acceptTrue(Functions.notNull(userDto), ()-> {
             User newUser = this.mapper.mapTo(userDto, User.class);
-            return this.mapper.mapTo(this.userRepository.save(newUser), UserDto.class);
+            return Util.mapTo(this.userRepository.save(newUser), new UserDto());
         }, ()-> { throw  new EntityNotFoundException("Error to save Entity");});
     }
 
     @Override
     public UserDto update(UserDto userDto) {
         return  Functions.acceptTrue(Functions.notNull(userDto), ()-> {
-            User userDatabase = this.mapper.mapTo(this.findById(userDto.getId()), User.class);
-            User userUpdate = this.mapper.mapTo(userDto, User.class);
+            User userDatabase = Util.mapTo(this.findById(userDto.getId()), new User());
+            User userUpdate = Util.mapTo(userDto, new User());
             BeanUtils.copyProperties(userUpdate,userDatabase, "id" );
-            return this.mapper.mapTo(this.userRepository.save(userDatabase), UserDto.class);
+            User userSaved = this.userRepository.save(userDatabase);
+            return Util.mapTo(userSaved, new UserDto());
         }, ()-> { throw  new EntityNotFoundException("Erro to update Entity");});
     }
 

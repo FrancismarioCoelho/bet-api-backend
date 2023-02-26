@@ -3,7 +3,9 @@ package br.com.betApi.services;
 
 import br.com.betApi.application.shared.dto.FilterDto;
 import br.com.betApi.application.shared.dto.UserDto;
+import br.com.betApi.application.shared.function.Functions;
 import br.com.betApi.application.shared.mapper.GenericObjectMapper;
+import br.com.betApi.application.shared.util.Util;
 import br.com.betApi.domain.enums.StatusUser;
 import br.com.betApi.domain.model.user.User;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
@@ -14,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -57,14 +60,19 @@ public class UserServiceTest {
         List<User> userDatabase = this.userRepository.findAll();
         User newUser = this.createUser( "mc@devtest", "321",
                 StatusUser.ATIVO, "Administrator");
-        UserDto newUserDto = this.mapper.mapTo(newUser, UserDto.class);
+        UserDto newUserDto = Util.mapTo(newUser, new UserDto());
         if(userDatabase.isEmpty()){
            this.save();
            userDatabase.addAll(this.userRepository.findAll());
-        }else{
-            userDatabase.forEach(user -> newUserDto.setId(user.getId()));
         }
-        Assertions.assertNotNull(this.service.update(newUserDto));
+        newUserDto.setId(userDatabase.get(0).getId());
+
+        if(newUserDto.getId() != null){
+            UserDto userResult = this.service.update(newUserDto);
+            Assertions.assertEquals(userResult.getEmail(), newUser.getEmail());
+        }else{
+            Assertions.assertEquals(Boolean.TRUE, Boolean.FALSE);
+        }
     }
 
     @Test
@@ -131,9 +139,44 @@ public class UserServiceTest {
         }else{
             userDatabase.forEach(user -> this.service.delete(user.getId()));
 
-            if(this.userRepository.findAll().isEmpty()){
+            boolean result = this.userRepository.findAll().isEmpty();
+            if(result){
                 Assertions.assertTrue(Boolean.TRUE);
+            }else {
+                Assertions.assertEquals(false, Boolean.TRUE);
             }
+        }
+    }
+
+    @Test
+    @DisplayName(value = "Mapper to entity test")
+    void mapTo(){
+        List<User> userDatabase = this.userRepository.findAll();
+
+        if(userDatabase.isEmpty()){
+            this.save();
+            userDatabase.addAll(this.userRepository.findAll());
+        }else {
+            UserDto userDto = Util.mapTo(userDatabase.get(0), new UserDto());
+
+            Functions.notNull(userDto, () -> {
+                System.out.println(userDto);
+                Assertions.assertTrue(Boolean.TRUE);
+            });
+
+            List<UserDto> userDtoList = Util.mapListTo(userDatabase, new UserDto());
+            Functions.notNull(userDto, () -> {
+                System.out.println(userDtoList);
+                Assertions.assertTrue(Boolean.TRUE);
+            });
+
+            Page<User> pageUserDatabase = this.userRepository.findAll(Pageable.unpaged());
+
+            Page<UserDto> userDtoPage = Util.mapToPageable(pageUserDatabase, new UserDto());
+            Functions.notNull(userDto, () -> {
+                System.out.println(userDtoPage);
+                Assertions.assertTrue(Boolean.TRUE);
+            });
         }
     }
 

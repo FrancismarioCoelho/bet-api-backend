@@ -10,7 +10,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - bet-database/var/lib/postgres/bet
+      - /var/lib/postgres/betapi
 
 volumes:
   bet-database:
