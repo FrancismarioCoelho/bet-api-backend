@@ -1,7 +1,7 @@
 package br.com.betApi.domain.model.person;
 
+import br.com.betApi.domain.enums.GenderType;
 import br.com.betApi.domain.model.user.aggregates.phone.Phone;
-import br.com.betApi.domain.objectValues.enums.GenderType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +28,7 @@ public class Person {
     @Column(name = "tax_id")
     private String taxId;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "gender")
     private GenderType gender;
 
