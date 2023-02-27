@@ -1,7 +1,7 @@
 package br.com.betApi.domain.model.user;
 
-import br.com.betApi.application.shared.dto.UserDto;
 import br.com.betApi.domain.enums.StatusUser;
+import br.com.betApi.domain.model.person.Person;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +12,6 @@ import org.hibernate.annotations.LazyCollectionOption;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Setter
 @Getter
@@ -42,6 +41,10 @@ public class User implements Serializable {
     @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
     @JoinColumn(name = "user_id")
     private List<Role> roles;
+
+    @OneToOne
+    @JoinColumn(name = "person_id")
+    private Person person;
 
     public User() {
     }
