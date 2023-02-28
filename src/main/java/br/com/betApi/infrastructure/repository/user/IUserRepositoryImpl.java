@@ -1,4 +1,4 @@
-package br.com.betApi.infrastructure.repository;
+package br.com.betApi.infrastructure.repository.user;
 
 import br.com.betApi.domain.model.user.User;
 import org.springframework.data.domain.Page;

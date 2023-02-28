@@ -10,7 +10,7 @@ import br.com.betApi.domain.enums.StatusUser;
 import br.com.betApi.domain.model.user.User;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import br.com.betApi.domain.vo.IUserServiceImpl;
-import br.com.betApi.infrastructure.repository.IUserRepositoryImpl;
+import br.com.betApi.infrastructure.repository.user.IUserRepositoryImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package br.com.betApi.infrastructure.repository;
+package br.com.betApi.infrastructure.repository.role;
 
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

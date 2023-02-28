@@ -7,7 +7,7 @@ import br.com.betApi.application.shared.mapper.GenericObjectMapper;
 import br.com.betApi.application.shared.util.Util;
 import br.com.betApi.domain.model.user.User;
 import br.com.betApi.domain.vo.IUserServiceImpl;
-import br.com.betApi.infrastructure.repository.IUserRepositoryImpl;
+import br.com.betApi.infrastructure.repository.user.IUserRepositoryImpl;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
