@@ -1,6 +1,6 @@
 package br.com.betApi.domain.model.person;
 
-import br.com.betApi.domain.enums.GenderType;
+import br.com.betApi.domain.vo.enums.GenderType;
 import br.com.betApi.domain.model.user.aggregates.phone.Phone;
 import jakarta.persistence.*;
 import lombok.Getter;

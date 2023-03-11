@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface IUserRepositoryImpl extends JpaRepository<User, Long> {
+public interface IUserRepository extends JpaRepository<User, Long> {
 
     @Query("FROM User u" +
             " WHERE (:id IS NULL OR :id = 0 OR u.id = :id) " +

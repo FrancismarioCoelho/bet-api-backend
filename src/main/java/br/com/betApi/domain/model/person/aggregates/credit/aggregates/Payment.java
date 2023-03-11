@@ -1,7 +1,7 @@
 package br.com.betApi.domain.model.person.aggregates.credit.aggregates;
 
-import br.com.betApi.domain.enums.StatusPayment;
-import br.com.betApi.domain.enums.TypePayment;
+import br.com.betApi.domain.vo.enums.StatusPayment;
+import br.com.betApi.domain.vo.enums.TypePayment;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

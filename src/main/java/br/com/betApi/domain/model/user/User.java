@@ -1,6 +1,7 @@
 package br.com.betApi.domain.model.user;
 
-import br.com.betApi.domain.enums.StatusUser;
+import br.com.betApi.application.core.user.dto.UserInputDto;
+import br.com.betApi.domain.vo.enums.StatusUser;
 import br.com.betApi.domain.model.person.Person;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import jakarta.persistence.*;
@@ -49,12 +50,12 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String email, String password, LocalDateTime createAt, StatusUser status, List<Role> roles) {
-        this.email = email;
-        this.password = password;
-        this.createAt = createAt;
-        this.status = status;
-        this.roles = roles;
+    public User(UserInputDto dto) {
+        this.email = dto.email();
+        this.password = dto.password();
+        this.createAt = dto.createAt();
+        this.status = dto.status();
+        this.roles = dto.roles();
     }
 
 }

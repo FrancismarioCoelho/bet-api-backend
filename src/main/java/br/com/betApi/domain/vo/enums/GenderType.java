@@ -1,4 +1,4 @@
-package br.com.betApi.domain.enums;
+package br.com.betApi.domain.vo.enums;
 
 import lombok.Getter;
 
