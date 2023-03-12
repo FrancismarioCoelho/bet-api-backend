@@ -1,5 +1,6 @@
 package br.com.betApi.application.core.user.dto;
 
+import br.com.betApi.application.core.role.dto.RoleInputDto;
 import br.com.betApi.domain.vo.enums.StatusUser;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import jakarta.validation.constraints.Email;
@@ -12,14 +13,14 @@ import java.util.List;
 
 public record UserInputDto(Long id,
                            @NotBlank
-                           @Email
+                           @Email(message = "E-mail inválido.")
                            String email,
                            @NotBlank
-                           @Size(min = 8, max = 8)
+                           @Size(min = 8, max = 8,message = "Senha inválida.")
                            String password,
-                           LocalDateTime createAt,
-                           @NotNull
+                           @NotNull(message = "Status inválido.")
                            StatusUser status,
-                           @NotNull
-                           List<Role> roles) {
+                           @NotNull(message = "Papel inválido. ")
+                           List<RoleInputDto> roles) {
+
 }

@@ -6,6 +6,7 @@ import br.com.betApi.domain.model.person.Person;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -13,6 +14,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Setter
 @Getter
@@ -38,24 +40,27 @@ public class User implements Serializable {
     @Column(name = "status")
     private StatusUser status;
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true)
-    @JoinColumn(name = "user_id")
+    @OneToMany(fetch= FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "tb_role_user",
+            joinColumns = {@JoinColumn(name = "user_id")},
+            inverseJoinColumns = {@JoinColumn(name = "role_id")} )
     private List<Role> roles;
 
     @OneToOne
     @JoinColumn(name = "person_id")
     private Person person;
 
-    public User() {
+    @PrePersist
+    public void setCreateAt() {
+        this.createAt = LocalDateTime.now();;
     }
 
+
     public User(UserInputDto dto) {
-        this.email = dto.email();
-        this.password = dto.password();
-        this.createAt = dto.createAt();
-        this.status = dto.status();
-        this.roles = dto.roles();
+        email = dto.email();
+        password = dto.password();
+        status = dto.status();
+        roles = dto.roles().stream().map(Role::new).collect(Collectors.toList());
     }
 
 }

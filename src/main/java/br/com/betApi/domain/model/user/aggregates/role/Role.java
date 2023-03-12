@@ -1,19 +1,16 @@
 package br.com.betApi.domain.model.user.aggregates.role;
 
 
+import br.com.betApi.application.core.role.dto.RoleInputDto;
 import br.com.betApi.domain.model.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
-@EqualsAndHashCode
-@AllArgsConstructor
 @Entity
 @Table(name = "tb_role")
+@NoArgsConstructor
 public class Role {
 
     @Id
@@ -21,18 +18,18 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @Column(name = "description")
     private String description;
 
-    public Role() {
 
+    public Role(RoleInputDto dto) {
+        this.id = dto.id();
+        this.description = dto.description();
     }
 
-    public Role(String description) {
-        this.description = description;
+    public Role(Role role) {
+        this.id = role.getId();
+        this.description = role.getDescription();
     }
+
 }
