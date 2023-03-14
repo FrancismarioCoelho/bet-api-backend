@@ -1,6 +1,5 @@
 package br.com.betApi.presentation.controller.user;
 
-import br.com.betApi.application.core.user.UserService;
 import br.com.betApi.application.core.user.dto.UserInputDto;
 import br.com.betApi.application.core.user.dto.UserOutputDto;
 import br.com.betApi.domain.model.user.User;
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @PostMapping
     @Transactional
@@ -49,5 +48,7 @@ public class UserController {
     private void delete(@PathVariable Long id){
         userService.delete(id);
     }
+
+
 
 }

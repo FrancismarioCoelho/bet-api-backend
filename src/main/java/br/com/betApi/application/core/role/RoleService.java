@@ -24,7 +24,7 @@ public class RoleService implements IRoleService {
     @Override
     public Role update(Role role) {
         Role roleSave = findById(role.getId());
-        BeanUtils.copyProperties(role,roleSave);
+        BeanUtils.copyProperties(role, roleSave);
         return roleRepository.save(role);
     }
 
@@ -35,7 +35,7 @@ public class RoleService implements IRoleService {
 
     @Override
     public Role findById(Long id) {
-        return roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role não existe id:"+id));
+        return roleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Role não existe id:" + id));
     }
 
     @Override
