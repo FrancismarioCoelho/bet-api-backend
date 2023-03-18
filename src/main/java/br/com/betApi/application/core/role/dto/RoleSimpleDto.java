@@ -1,4 +1,6 @@
 package br.com.betApi.application.core.role.dto;
 
-public record RoleSimpleDto(Long id){
+import jakarta.validation.constraints.NotNull;
+
+public record RoleSimpleDto(@NotNull(message = "Informe o papel do usuário.") Long id){
 }
