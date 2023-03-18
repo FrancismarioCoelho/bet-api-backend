@@ -23,32 +23,31 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    private ResponseEntity<UserOutputDto> save(@RequestBody  UserInputDto dto){
+    public ResponseEntity<UserOutputDto> save(@Valid @RequestBody UserInputDto dto){
         return ResponseEntity.status(HttpStatus.OK).body(new UserOutputDto(userService.save(new User(dto))));
     }
 
     @PutMapping
     @Transactional
-    private ResponseEntity<UserOutputDto> update(@RequestBody @Valid UserInputDto dto){
+    public ResponseEntity<UserOutputDto> update(@RequestBody @Valid UserInputDto dto){
         return ResponseEntity.status(HttpStatus.OK).body(new UserOutputDto(userService.update(new User(dto))));
     }
 
     @GetMapping(path = "/{id}")
-    private ResponseEntity<UserOutputDto>  findById(@PathVariable Long id){
+    public ResponseEntity<UserOutputDto>  findById(@PathVariable Long id){
         return ResponseEntity.status(HttpStatus.OK).body(new UserOutputDto(userService.findById(id)));
     }
 
     @GetMapping
-    private ResponseEntity<List<UserOutputDto>> findAll(Long id){
+    public ResponseEntity<List<UserOutputDto>> findAll(Long id){
         return ResponseEntity.status(HttpStatus.OK)
                 .body(userService.findAll().stream().map(UserOutputDto::new).collect(Collectors.toList()));
     }
     @DeleteMapping(path = "/{id}")
     @Transactional
-    private void delete(@PathVariable Long id){
+    public void delete(@PathVariable Long id){
         userService.delete(id);
     }
-
 
 
 }

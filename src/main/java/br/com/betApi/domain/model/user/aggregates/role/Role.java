@@ -2,6 +2,7 @@ package br.com.betApi.domain.model.user.aggregates.role;
 
 
 import br.com.betApi.application.core.role.dto.RoleInputDto;
+import br.com.betApi.application.core.role.dto.RoleSimpleDto;
 import br.com.betApi.domain.model.user.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +11,6 @@ import lombok.*;
 @Getter
 @Entity
 @Table(name = "tb_role")
-@NoArgsConstructor
 public class Role {
 
     @Id
@@ -21,10 +21,7 @@ public class Role {
     @Column(name = "description")
     private String description;
 
-
-    public Role(RoleInputDto dto) {
-        this.id = dto.id();
-        this.description = dto.description();
+    public Role() {
     }
 
     public Role(Role role) {
@@ -32,4 +29,12 @@ public class Role {
         this.description = role.getDescription();
     }
 
+    public Role(RoleSimpleDto dto) {
+        this.id = dto.id();
+    }
+
+    public Role(RoleInputDto dto) {
+        this.id = dto.id();
+        this.description = dto.description();
+    }
 }
