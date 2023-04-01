@@ -23,7 +23,7 @@ public class UserController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity<UserOutputDto> save(@Valid @RequestBody UserInputDto dto){
+    public ResponseEntity<UserOutputDto> save(@RequestBody UserInputDto dto){
         return ResponseEntity.status(HttpStatus.OK).body(new UserOutputDto(userService.save(new User(dto))));
     }
 
