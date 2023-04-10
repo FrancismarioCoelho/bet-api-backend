@@ -1,4 +1,4 @@
-package br.com.betApi.domain.model.person.aggregates.credit.aggregates;
+package br.com.betApi.domain.model.person.aggregates.credit.aggregates.payment;
 
 import br.com.betApi.domain.vo.enums.StatusPayment;
 import br.com.betApi.domain.vo.enums.TypePayment;
@@ -22,8 +22,8 @@ public class Payment {
     @Column(name = "value")
     private Double value;
 
-    @Column(name = "create_at")
-    private LocalDateTime createAt;
+    @Column(name = "created")
+    private LocalDateTime created;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type")

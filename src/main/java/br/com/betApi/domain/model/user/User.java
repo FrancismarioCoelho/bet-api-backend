@@ -1,6 +1,6 @@
 package br.com.betApi.domain.model.user;
 
-import br.com.betApi.application.core.user.dto.UserInputDto;
+import br.com.betApi.application.core.user.dto.request.UserRequestDTO;
 import br.com.betApi.domain.model.person.Person;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import br.com.betApi.domain.vo.enums.StatusUser;
@@ -47,7 +47,7 @@ public class User implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "role_id")} )
     private List<Role> roles;
 
-    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Person person;
 
@@ -56,11 +56,12 @@ public class User implements Serializable {
         this.createAt = LocalDateTime.now();;
     }
 
-    public User(UserInputDto dto) {
+    public User(UserRequestDTO dto) {
         email = dto.email();
         password = dto.password();
         status = dto.status();
         roles = dto.roles().stream().map(Role::new).collect(Collectors.toList());
+        person = new Person(dto.person());
     }
 
 }

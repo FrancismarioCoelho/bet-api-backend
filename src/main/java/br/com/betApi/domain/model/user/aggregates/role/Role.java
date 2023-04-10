@@ -1,9 +1,8 @@
 package br.com.betApi.domain.model.user.aggregates.role;
 
 
-import br.com.betApi.application.core.role.dto.RoleInputDto;
-import br.com.betApi.application.core.role.dto.RoleSimpleDto;
-import br.com.betApi.domain.model.user.User;
+import br.com.betApi.application.core.role.dto.request.RoleRequestDTO;
+import br.com.betApi.application.core.role.dto.request.RoleRequestSimpleDTO;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,12 +28,13 @@ public class Role {
         this.description = role.getDescription();
     }
 
-    public Role(RoleSimpleDto dto) {
+    public Role(RoleRequestSimpleDTO dto) {
         this.id = dto.id();
     }
 
-    public Role(RoleInputDto dto) {
+    public Role(RoleRequestDTO dto) {
         this.id = dto.id();
         this.description = dto.description();
     }
+
 }

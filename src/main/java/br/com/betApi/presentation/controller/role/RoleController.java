@@ -1,11 +1,10 @@
 package br.com.betApi.presentation.controller.role;
 
-import br.com.betApi.application.core.role.dto.RoleInputDto;
-import br.com.betApi.application.core.role.dto.RoleOutputDto;
+import br.com.betApi.application.core.role.dto.request.RoleRequestSimpleDTO;
+import br.com.betApi.application.core.role.dto.response.RoleResponseDTO;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
 import br.com.betApi.domain.service.roles.IRoleService;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,24 +20,24 @@ public class RoleController {
 
     @PostMapping
     @Transactional
-    public RoleOutputDto save(@RequestBody RoleInputDto dto) {
-        return new RoleOutputDto(roleService.save(new Role(dto)));
+    public RoleResponseDTO save(@RequestBody RoleRequestSimpleDTO dto) {
+        return new RoleResponseDTO(roleService.save(new Role(dto)));
     }
 
     @PutMapping
     @Transactional
-    public RoleOutputDto update(@RequestBody RoleInputDto dto) {
-        return new RoleOutputDto(roleService.update(new Role(dto)));
+    public RoleResponseDTO update(@RequestBody RoleRequestSimpleDTO dto) {
+        return new RoleResponseDTO(roleService.update(new Role(dto)));
     }
 
     @GetMapping(path = "/{id}")
-    public RoleOutputDto findById(@PathVariable Long id) {
-        return new RoleOutputDto(roleService.findById(id));
+    public RoleResponseDTO findById(@PathVariable Long id) {
+        return new RoleResponseDTO(roleService.findById(id));
     }
 
     @GetMapping
-    public List<RoleOutputDto> findAll() {
-        return roleService.findAll().stream().map(RoleOutputDto::new).collect(Collectors.toList());
+    public List<RoleResponseDTO> findAll() {
+        return roleService.findAll().stream().map(RoleResponseDTO::new).collect(Collectors.toList());
     }
 
     @DeleteMapping(path = "/{id}")

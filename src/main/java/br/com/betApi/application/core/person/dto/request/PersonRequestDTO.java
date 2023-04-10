@@ -1,7 +1,8 @@
-package br.com.betApi.application.core.person.dto;
+package br.com.betApi.application.core.person.dto.request;
 
-import br.com.betApi.domain.model.user.aggregates.phone.Phone;
+import br.com.betApi.application.core.user.dto.request.PhoneRequestDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,7 +10,7 @@ import jakarta.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
-public record PersonInputDto(
+public record PersonRequestDTO(
         Long id,
         @NotBlank(message = "Informe o campo de nome.")
         String name,
@@ -21,8 +22,8 @@ public record PersonInputDto(
         @NotBlank(message = "Informe o campo de genero.")
         String gender,
         @NotNull(message = "Informe o campo de data de nascimento.")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
         Date birthDate,
-        List<Phone> phones
+        @Valid List<PhoneRequestDTO> phones
 ) {
 }

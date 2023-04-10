@@ -1,20 +1,23 @@
 package br.com.betApi.domain.model.person;
 
-import br.com.betApi.application.core.person.dto.PersonInputDto;
+import br.com.betApi.application.core.person.dto.request.PersonRequestDTO;
 import br.com.betApi.domain.model.person.aggregates.credit.Credit;
-import br.com.betApi.domain.model.user.aggregates.phone.Phone;
+import br.com.betApi.domain.model.person.aggregates.phone.Phone;
 import br.com.betApi.domain.vo.enums.GenderType;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 @Table(name = "tb_person")
 public class Person {
 
@@ -47,14 +50,13 @@ public class Person {
     @JoinColumn(name = "person_id")
     private List<Phone> phones;
 
-    public Person(PersonInputDto dto) {
+    public Person(PersonRequestDTO dto) {
         this.id = dto.id();
         this.name = dto.name();
         this.nickName = dto.nickName();
         this.taxId = dto.taxId();
         this.gender = GenderType.valueOf(dto.gender());
         this.birthDate = dto.birthDate();
-        this.credit =  getCredit(); //todo:aplicar dto
-        this.phones =  getPhones(); //todo:aplicar dto
+        this.phones =  dto.phones().stream().map(Phone::new).collect(Collectors.toList());
     }
 }
