@@ -1,5 +1,6 @@
 package br.com.betApi.presentation.controller.role;
 
+import br.com.betApi.application.core.role.dto.request.RoleRequestDTO;
 import br.com.betApi.application.core.role.dto.request.RoleRequestSimpleDTO;
 import br.com.betApi.application.core.role.dto.response.RoleResponseDTO;
 import br.com.betApi.domain.model.user.aggregates.role.Role;
@@ -20,13 +21,13 @@ public class RoleController {
 
     @PostMapping
     @Transactional
-    public RoleResponseDTO save(@RequestBody RoleRequestSimpleDTO dto) {
+    public RoleResponseDTO save(@RequestBody RoleRequestDTO dto) {
         return new RoleResponseDTO(roleService.save(new Role(dto)));
     }
 
     @PutMapping
     @Transactional
-    public RoleResponseDTO update(@RequestBody RoleRequestSimpleDTO dto) {
+    public RoleResponseDTO update(@RequestBody RoleRequestDTO dto) {
         return new RoleResponseDTO(roleService.update(new Role(dto)));
     }
 
