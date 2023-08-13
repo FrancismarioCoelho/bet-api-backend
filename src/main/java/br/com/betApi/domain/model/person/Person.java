@@ -29,6 +29,9 @@ public class Person {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "nick_name")
     private String nickName;
 
@@ -52,6 +55,7 @@ public class Person {
 
     public Person(PersonRequestDTO dto) {
         this.id = dto.id();
+        this.email = dto.email();
         this.name = dto.name();
         this.nickName = dto.nickName();
         this.taxId = dto.taxId();

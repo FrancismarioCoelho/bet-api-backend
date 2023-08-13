@@ -28,8 +28,8 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "login")
+    private String login;
 
     @Column(name = "password")
     private String password;
@@ -57,7 +57,6 @@ public class User implements Serializable {
     }
 
     public User(UserRequestDTO dto) {
-        email = dto.email();
         password = dto.password();
         status = dto.status();
         roles = dto.roles().stream().map(Role::new).collect(Collectors.toList());

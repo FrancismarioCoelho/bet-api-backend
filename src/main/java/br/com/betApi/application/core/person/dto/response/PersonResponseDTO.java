@@ -5,6 +5,7 @@ import java.util.List;
 
 public record PersonResponseDTO(Long id,
                                 String name,
+                                String email,
                                 String nickName,
                                 String taxId,
                                 String gender,

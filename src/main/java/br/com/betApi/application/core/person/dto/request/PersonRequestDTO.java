@@ -3,6 +3,7 @@ package br.com.betApi.application.core.person.dto.request;
 import br.com.betApi.application.core.user.dto.request.PhoneRequestDTO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -12,6 +13,8 @@ import java.util.List;
 
 public record PersonRequestDTO(
         Long id,
+        @Email(message = "O email informado não é válido.")
+        String email,
         @NotBlank(message = "Informe o campo de nome.")
         String name,
         @NotBlank(message = "Informe o campo de nickName.")

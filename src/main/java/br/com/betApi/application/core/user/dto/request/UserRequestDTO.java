@@ -13,8 +13,6 @@ import java.util.List;
 
 
 public record UserRequestDTO(Long id,
-                             @Email(message = "O email informado não é válido.")
-                             String email,
                              @NotBlank(message = "Informe o campo de senha.")
                              @Size(min = 8, max = 8, message = "Insira uma senha com 8 caracteres.")
                              String password,
@@ -24,9 +22,8 @@ public record UserRequestDTO(Long id,
                              List<RoleRequestSimpleDTO> roles,
                              @Valid PersonRequestDTO person
 ) {
-    public UserRequestDTO(Long id, String email, String password, StatusUser status, List<RoleRequestSimpleDTO> roles, PersonRequestDTO person) {
+    public UserRequestDTO(Long id, String password, StatusUser status, List<RoleRequestSimpleDTO> roles, PersonRequestDTO person) {
         this.id = id;
-        this.email = email;
         this.password = password;
         this.status = status;
         this.roles = roles;

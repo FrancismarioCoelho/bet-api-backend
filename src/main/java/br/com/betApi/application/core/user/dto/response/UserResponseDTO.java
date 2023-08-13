@@ -9,14 +9,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public record UserResponseDTO(Long id,
-                              String email,
                               LocalDateTime createAt,
                               StatusUser status,
                               List<RoleResponseDTO> roles) {
 
 
     public UserResponseDTO(User user) {
-        this(user.getId(), user.getEmail(), user.getCreateAt(), user.getStatus(),
+        this(user.getId(), user.getCreateAt(), user.getStatus(),
                 user.getRoles().stream().map(RoleResponseDTO::new).collect(Collectors.toList()));
     }
 }
