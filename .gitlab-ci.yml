@@ -1,13 +1,9 @@
-image: openjdk:22-jdk
+image: maven:3.8-openjdk-22
 
 stages:
   - build
   - test
   - deploy
-
-before_script:
-  # Atualiza os pacotes disponíveis e instala o Maven.
-  - apt-get update && apt-get install -y maven
 
 cache:
   paths:
@@ -17,30 +13,27 @@ build:
   stage: build
   script:
     - echo "Compilando o projeto..."
-    - mvn clean package  # Compila o projeto e empacota
+    - mvn clean package
   artifacts:
     paths:
-      - target/  # Armazena os artefatos de build, como JARs ou WARs
-    expire_in: 1 hour  # Configura os artefatos para expirar em 1 hora
+      - target/
 
 test:
   stage: test
   script:
     - echo "Executando testes..."
-    - mvn test  # Executa os testes unitários
+    - mvn test
   artifacts:
-    when: always
     paths:
-      - target/surefire-reports/  # Guarda os relatórios de teste
-    expire_in: 1 hour  # Configura os artefatos para expirar em 1 hora
+      - target/surefire-reports/
 
 deploy:
   stage: deploy
   script:
     - echo "Realizando o deployment da aplicação..."
-    - mvn deploy -DskipTests  # Realiza o deployment usando Maven
+    - mvn deploy -DskipTests
   environment:
-    name: production  # Define o ambiente de deploy como produção
-    url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy
+    name: production
+    url: http://your-production-url.com
   only:
-    - main  # Especifica que
+    - main
