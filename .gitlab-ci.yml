@@ -1,4 +1,3 @@
-# Utiliza uma imagem pública do Docker que inclui o JDK 22.
 image: openjdk:22-jdk
 
 stages:
@@ -6,42 +5,41 @@ stages:
   - test
   - deploy
 
-# Cache configurado para reutilizar as dependências baixadas pelo Maven.
+before_script:
+  - apt-get update && apt-get install -y maven  # Instala Maven antes de executar os scripts
+
 cache:
   paths:
     - .m2/repository/
 
-# Job para construir o projeto. Este job executa a limpeza e compilação do projeto.
 build:
   stage: build
   script:
     - echo "Compilando o projeto..."
-    - mvn clean package  # Compila o projeto e empacota.
+    - mvn clean package  # Compila o projeto e empacota
   artifacts:
     paths:
-      - target/  # Armazena os artefatos de build, como JARs ou WARs.
-    expire_in: 1 hour  # Configura os artefatos para expirar em 1 hora se não forem usados.
+      - target/  # Armazena os artefatos de build, como JARs ou WARs
+    expire_in: 1 hour  # Configura os artefatos para expirar em 1 hora
 
-# Job para executar testes unitários e de integração.
 test:
   stage: test
   script:
     - echo "Executando testes..."
-    - mvn test  # Executa todos os testes definidos no projeto Maven.
+    - mvn test  # Executa os testes unitários
   artifacts:
     when: always
     paths:
-      - target/surefire-reports/  # Guarda os relatórios de teste gerados durante a fase de testes.
-    expire_in: 1 hour  # Configura os artefatos para expirar em 1 hora.
+      - target/surefire-reports/  # Guarda os relatórios de teste
+    expire_in: 1 hour  # Configura os artefatos para expirar em 1 hora
 
-# Job para realizar o deployment do projeto. Isso pode envolver o deploy em um ambiente de teste ou produção.
 deploy:
   stage: deploy
   script:
     - echo "Realizando o deployment da aplicação..."
-    - mvn deploy -DskipTests  # Realiza o deployment usando Maven, evitando a repetição de testes.
+    - mvn deploy -DskipTests  # Realiza o deployment usando Maven
   environment:
-    name: production  # Define o ambiente de deploy como produção.
-    url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy.
+    name: production  # Define o ambiente de deploy como produção
+    url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy
   only:
-    - main  # Especifica que este job deve ser executado apenas na branch 'main'.
+    - main  # Especifica que este job deve ser executado apenas na branch 'main'
