@@ -6,7 +6,8 @@ stages:
   - deploy
 
 before_script:
-  - apt-get update && apt-get install -y maven  # Instala Maven antes de executar os scripts
+  # Atualiza os pacotes disponíveis e instala o Maven.
+  - apt-get update && apt-get install -y maven
 
 cache:
   paths:
@@ -42,4 +43,4 @@ deploy:
     name: production  # Define o ambiente de deploy como produção
     url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy
   only:
-    - main  # Especifica que este job deve ser executado apenas na branch 'main'
+    - main  # Especifica que
