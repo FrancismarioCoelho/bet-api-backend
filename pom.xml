@@ -14,9 +14,7 @@
     <name>betApi</name>
     <description>betting system</description>
     <properties>
-        <java.version>22</java.version>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <java.version>18</java.version>
     </properties>
     <dependencies>
 
@@ -73,14 +71,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.10.1</version>
-                <configuration>
-                    <release>22</release>
                 </configuration>
             </plugin>
         </plugins>

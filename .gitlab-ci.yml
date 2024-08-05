@@ -1,43 +1,55 @@
-image: openjdk:22-jdk
+# Define a imagem Docker que será usada em todos os jobs.
+# A imagem inclui o Maven e o JDK 18, o que garante compatibilidade e evita a necessidade de instalar o Maven manualmente.
+image: maven:3.8-openjdk-18
 
+# Lista de estágios que a pipeline executará sequencialmente.
 stages:
   - build
   - test
   - deploy
 
-before_script:
-  # Atualiza o índice de pacotes e instala o Maven usando apk, comum em distros como Alpine Linux.
-  - apk update && apk add maven
-
+# Configurações de cache para reutilizar as dependências baixadas entre diferentes execuções de pipeline.
+# Isso acelera a instalação de dependências em builds subsequentes.
 cache:
   paths:
     - .m2/repository/
 
+# Job de build que compila o código do projeto.
 build:
-  stage: build
+  stage: build  # Associa este job ao estágio 'build'.
   script:
     - echo "Compilando o projeto..."
-    - mvn clean package
+    - mvn clean package  # Executa o Maven para limpar e compilar o projeto.
   artifacts:
     paths:
-      - target/
+      - target/  # Salva os artefatos de build (ex., arquivos JAR) que podem ser usados em estágios posteriores.
+    expire_in: 1 hour  # Os artefatos expiram após 1 hora se não forem usados.
 
+# Job de teste que executa os testes unitários do projeto.
 test:
-  stage: test
+  stage: test  # Associa este job ao estágio 'test'.
   script:
     - echo "Executando testes..."
-    - mvn test
+    - mvn test  # Executa os testes unitários definidos no projeto Maven.
   artifacts:
+    when: always  # Salva os relatórios de testes mesmo se os testes falharem.
     paths:
-      - target/surefire-reports/
+      - target/surefire-reports/  # Local onde os relatórios de testes são armazenados.
+    expire_in: 1 hour  # Configura para os artefatos expirarem após 1 hora.
 
+# Job de deploy que realiza a implantação da aplicação.
 deploy:
-  stage: deploy
+  stage: deploy  # Associa este job ao estágio 'deploy'.
   script:
     - echo "Realizando o deployment da aplicação..."
-    - mvn deploy -DskipTests
+    - mvn deploy -DskipTests  # Faz o deploy do projeto, pulando a execução dos testes para acelerar o processo.
   environment:
-    name: production
-    url: http://your-production-url.com
+    name: production  # Define o nome do ambiente de deploy como 'production'.
+    url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy.
   only:
-    - main
+    - main  # Especifica que este job deve ser executado apenas na branch 'main'.
+
+# Notas:
+# - Os 'artifacts' são usados para passar arquivos entre jobs e estágios.
+# - O uso de 'cache' reduz o tempo de build ao evitar downloads repetidos de dependências.
+# - A especificação de 'only' no estágio de deploy garante que mudanças significativas sejam feitas apenas a partir da branch principal.
