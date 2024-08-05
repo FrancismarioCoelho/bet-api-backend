@@ -1,9 +1,13 @@
-image: maven:3.8-openjdk-22
+image: openjdk:22-jdk
 
 stages:
   - build
   - test
   - deploy
+
+before_script:
+  # Atualiza o índice de pacotes e instala o Maven usando apk, comum em distros como Alpine Linux.
+  - apk update && apk add maven
 
 cache:
   paths:
