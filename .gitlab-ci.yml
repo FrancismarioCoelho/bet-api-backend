@@ -7,6 +7,7 @@ stages:
   - build
   - test
   - deploy
+  - notifications
 
 # Configurações de cache para reutilizar as dependências baixadas entre diferentes execuções de pipeline.
 # Isso acelera a instalação de dependências em builds subsequentes.
@@ -48,6 +49,13 @@ deploy:
     url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy.
   only:
     - main  # Especifica que este job deve ser executado apenas na branch 'main'.
+
+ # Job de deploy que realiza a implantação da aplicação.
+notifications:
+  stage: notifications  # enviar notificações aos envolvidos no projeto.
+  script:
+    - echo "Enviando notificações..."
+        
 
 # Notas:
 # - Os 'artifacts' são usados para passar arquivos entre jobs e estágios.
