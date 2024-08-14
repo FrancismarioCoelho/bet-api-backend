@@ -38,26 +38,24 @@ test:
       - target/surefire-reports/  # Local onde os relatórios de testes são armazenados.
     expire_in: 1 hour  # Configura para os artefatos expirarem após 1 hora.
 
-# Job de deploy que realiza a implantação da aplicação.
+# Job de deploy que realiza a implantação da aplicação na instância EC2.
 deploy:
   stage: deploy  # Associa este job ao estágio 'deploy'.
   script:
     - echo "Realizando o deployment da aplicação..."
-    - mvn deploy -DskipTests  # Faz o deploy do projeto, pulando a execução dos testes para acelerar o processo.
+    - mkdir -p ~/.ssh  # Cria o diretório .ssh se não existir.
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Adiciona a chave privada SSH para acessar a EC2.
+    - chmod 600 ~/.ssh/id_rsa  # Define permissões corretas para a chave privada.
+    - scp -i ~/.ssh/id_rsa target/your-app.jar ec2-user@$EC2_HOST:/home/ec2-user/  # Copia o arquivo JAR para a EC2.
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "java -jar /home/ec2-user/your-app.jar"  # Executa o JAR na EC2.
   environment:
     name: production  # Define o nome do ambiente de deploy como 'production'.
     url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy.
   only:
     - main  # Especifica que este job deve ser executado apenas na branch 'main'.
 
- # Job de deploy que realiza a implantação da aplicação.
+# Job de notificações que envia notificações aos envolvidos no projeto.
 notifications:
-  stage: notifications  # enviar notificações aos envolvidos no projeto.
+  stage: notifications  # Enviar notificações aos envolvidos no projeto.
   script:
     - echo "Enviando notificações..."
-        
-
-# Notas:
-# - Os 'artifacts' são usados para passar arquivos entre jobs e estágios.
-# - O uso de 'cache' reduz o tempo de build ao evitar downloads repetidos de dependências.
-# - A especificação de 'only' no estágio de deploy garante que mudanças significativas sejam feitas apenas a partir da branch principal.
