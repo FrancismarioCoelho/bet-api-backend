@@ -1,0 +1,62 @@
+# Define a imagem Docker que será usada em todos os jobs.
+# A imagem inclui o Maven e o JDK 18, o que garante compatibilidade e evita a necessidade de instalar o Maven manualmente.
+image: maven:3.8-openjdk-18
+
+# Lista de estágios que a pipeline executará sequencialmente.
+stages:
+  - build
+  - test
+  - deploy
+  - notifications
+
+# Configurações de cache para reutilizar as dependências baixadas entre diferentes execuções de pipeline.
+# Isso acelera a instalação de dependências em builds subsequentes.
+cache:
+  paths:
+    - .m2/repository/
+
+# Job de build que compila o código do projeto.
+build:
+  stage: build  # Associa este job ao estágio 'build'.
+  script:
+    - echo "Compilando o projeto..."
+    - mvn clean package  # Executa o Maven para limpar e compilar o projeto.
+  artifacts:
+    paths:
+      - target/  # Salva os artefatos de build (ex., arquivos JAR) que podem ser usados em estágios posteriores.
+    expire_in: 1 hour  # Os artefatos expiram após 1 hora se não forem usados.
+
+# Job de teste que executa os testes unitários do projeto.
+test:
+  stage: test  # Associa este job ao estágio 'test'.
+  script:
+    - echo "Executando testes..."
+    - mvn test  # Executa os testes unitários definidos no projeto Maven.
+  artifacts:
+    when: always  # Salva os relatórios de testes mesmo se os testes falharem.
+    paths:
+      - target/surefire-reports/  # Local onde os relatórios de testes são armazenados.
+    expire_in: 1 hour  # Configura para os artefatos expirarem após 1 hora.
+
+# Job de deploy que realiza a implantação da aplicação na instância EC2.
+deploy:
+  stage: deploy  # Associa este job ao estágio 'deploy'.
+  script:
+    - echo "Realizando o deployment da aplicação..."
+    - mkdir -p ~/.ssh  # Cria o diretório .ssh se não existir.
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Adiciona a chave privada SSH para acessar a EC2.
+    - chmod 600 ~/.ssh/id_rsa  # Define permissões corretas para a chave privada.
+    - scp -i ~/.ssh/id_rsa target/your-app.jar ec2-user@$EC2_HOST:/home/ec2-user/  # Copia o arquivo JAR para a EC2.
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "java -jar /home/ec2-user/your-app.jar"  # Executa o JAR na EC2.
+  environment:
+    name: production  # Define o nome do ambiente de deploy como 'production'.
+    url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy.
+  only:
+    - main  # Especifica que este job deve ser executado apenas na branch 'main'.
+
+# Job de notificações que envia notificações aos envolvidos no projeto.
+notifications:
+  stage: notifications  # Enviar notificações aos envolvidos no projeto.
+  script:
+    - echo "Enviando notificações..."
+    
