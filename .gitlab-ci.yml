@@ -38,11 +38,10 @@ test:
       - target/surefire-reports/  # Local onde os relatórios de testes são armazenados.
     expire_in: 1 hour  # Configura para os artefatos expirarem após 1 hora.
 
-# Job de deploy que realiza a implantação da aplicação na instância EC2.
+# Job de deploy que realiza a implantação da aplicação na instância EC2. 
 deploy:
   stage: deploy
   script:
-    - echo "Realizando o deployment da aplicação..."
     - mkdir -p ~/.ssh
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
