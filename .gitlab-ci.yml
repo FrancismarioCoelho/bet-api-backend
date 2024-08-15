@@ -40,17 +40,18 @@ test:
 
 # Job de deploy que realiza a implantação da aplicação na instância EC2.
 deploy:
-  stage: deploy  # Associa este job ao estágio 'deploy'.
+  stage: deploy
   script:
     - echo "Realizando o deployment da aplicação..."
-    - mkdir -p ~/.ssh  # Cria o diretório .ssh se não existir.
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Adiciona a chave privada SSH para acessar a EC2.
-    - chmod 600 ~/.ssh/id_rsa  # Define permissões corretas para a chave privada.
-    - scp -i ~/.ssh/id_rsa target/your-app.jar ec2-user@$EC2_HOST:/home/ec2-user/  # Copia o arquivo JAR para a EC2.
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "java -jar /home/ec2-user/your-app.jar"  # Executa o JAR na EC2.
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - scp -i ~/.ssh/id_rsa target/your-app.jar ec2-user@$EC2_HOST:/home/ec2-user/
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "java -jar /home/ec2-user/your-app.jar"
   environment:
-    name: production  # Define o nome do ambiente de deploy como 'production'.
-    url: http://your-production-url.com  # URL onde a aplicação estará acessível após o deploy.
+    name: production
+    url: http://your-production-url.com
   only:
-    - main  # Especifica que este job deve ser executado apenas na branch 'main'.
+    - main
+
 
