@@ -52,5 +52,3 @@ deploy:
     url: http://your-production-url.com
   only:
     - main
-
-
