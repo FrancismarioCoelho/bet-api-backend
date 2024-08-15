@@ -1,77 +1,48 @@
-# Define a imagem Docker que será usada em todos os jobs.
-# A imagem inclui o Maven e o JDK 18, o que garante compatibilidade e evita a necessidade de instalar o Maven manualmente.
 image: maven:3.8-openjdk-18
 
-# Lista de estágios que a pipeline executará sequencialmente.
 stages:
   - build
   - test
   - deploy
-  - notifications
 
-# Configurações de cache para reutilizar as dependências baixadas entre diferentes execuções de pipeline.
-# Isso acelera a instalação de dependências em builds subsequentes.
 cache:
   paths:
     - .m2/repository/
 
-# Job de build que compila o código do projeto.
 build:
-  stage: build  # Associa este job ao estágio 'build'.
+  stage: build
   script:
     - echo "Compilando o projeto..."
-    - mvn clean package  # Executa o Maven para limpar e compilar o projeto.
+    - mvn clean package
+    - ls -la target/
   artifacts:
     paths:
-      - target/  # Salva os artefatos de build (ex., arquivos JAR) que podem ser usados em estágios posteriores.
-    expire_in: 1 hour  # Os artefatos expiram após 1 hora se não forem usados.
+      - target/
+    expire_in: 1 hour
 
-# Job de teste que executa os testes unitários do projeto.
 test:
-  stage: test  # Associa este job ao estágio 'test'.
+  stage: test
   script:
     - echo "Executando testes..."
-    - mvn test  # Executa os testes unitários definidos no projeto Maven.
+    - mvn test
   artifacts:
-    when: always  # Salva os relatórios de testes mesmo se os testes falharem.
+    when: always
     paths:
-      - target/surefire-reports/  # Local onde os relatórios de testes são armazenados.
-    expire_in: 1 hour  # Configura para os artefatos expirarem após 1 hora.
+      - target/surefire-reports/
+    expire_in: 1 hour
 
-# Job de deploy que realiza a implantação da aplicação na instância EC2.
 deploy:
-  stage: deploy  # Define que este job faz parte do estágio 'deploy' no pipeline.
+  stage: deploy
   script:
-    # Cria o diretório .ssh no diretório home do usuário, se não existir.
-    - mkdir -p ~/.ssh  
-    
-    # Adiciona a chave privada SSH à pasta .ssh, salvando-a no arquivo id_rsa.
-    # A variável de ambiente $id_rsa_gitlab deve conter a chave privada no formato PEM.
-    - echo "$id_rsa_gitlab" > ~/.ssh/id_rsa  
-    
-    # Define as permissões do arquivo id_rsa para que apenas o dono possa ler e escrever no arquivo.
-    # Isso é essencial para garantir a segurança da chave privada.
-    - chmod 600 ~/.ssh/id_rsa  
-    
-    # Adiciona a chave pública do host remoto ao arquivo known_hosts para evitar a confirmação manual do fingerprint do host.
-    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts  
-    
-    # Copia o arquivo JAR (your-app.jar) da pasta target no repositório para o diretório /home/ec2-user/
-    # na instância EC2, utilizando a chave privada para autenticação.
-    - scp -i ~/.ssh/id_rsa target/your-app.jar ec2-user@$EC2_HOST:/home/ec2-user/  
-    
-    # Conecta-se à instância EC2 via SSH e executa o comando para iniciar o arquivo JAR.
-    # A chave privada é utilizada para autenticação e o comando java -jar é usado para rodar a aplicação.
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "java -jar /home/ec2-user/your-app.jar"  
-    
+    - mkdir -p ~/.ssh
+    - echo "$id_rsa_gitlab" > ~/.ssh/id_rsa
+    - chmod 600 ~/.ssh/id_rsa
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
+    - ls -la target/  # Verifica se o arquivo está presente
+    - scp -i ~/.ssh/id_rsa target/your-app.jar ec2-user@$EC2_HOST:/home/ec2-user/
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "java -jar /home/ec2-user/your-app.jar"
   environment:
-    # Define o nome do ambiente para o deploy. Isso ajuda a identificar o ambiente onde a aplicação está sendo implantada.
-    name: production  
-    
-    # URL onde a aplicação estará acessível após o deploy. Isso pode ser usado para monitorar o status da aplicação.
-    url: http://your-production-url.com  
-    
+    name: production
+    url: http://your-production-url.com
   only:
-    # Especifica que este job deve ser executado apenas quando a branch 'main' for atualizada.
-    # Isso garante que o deploy só aconteça nas versões finais e estáveis do código.
-    - main  
+    - main
