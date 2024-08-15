@@ -54,9 +54,3 @@ deploy:
   only:
     - main  # Especifica que este job deve ser executado apenas na branch 'main'.
 
-# Job de notificações que envia notificações aos envolvidos no projeto.
-notifications:
-  stage: notifications  # Enviar notificações aos envolvidos no projeto.
-  script:
-    - echo "Enviando notificações..."
-    
