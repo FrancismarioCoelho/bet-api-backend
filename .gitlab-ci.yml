@@ -42,8 +42,12 @@ deploy:
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
     # Debug: Listar processos Java antes de parar a aplicação
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep java"
-    # Parar a aplicação antiga
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
+    # Identificar PID e parar o processo diretamente
+    - |
+      PID=$(ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pgrep -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar'")
+      if [ -n "$PID" ]; then
+        ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "kill -9 $PID"
+      fi
     # Debug: Verificar se o processo foi realmente parado
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep java"
     # Verificar se a porta 8080 está livre
@@ -57,5 +61,6 @@ deploy:
     url: http://your-production-url.com
   only:
     - main
+
 
 
