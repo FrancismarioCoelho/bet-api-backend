@@ -40,15 +40,22 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - ls -la target/
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
-    # Pare a aplicação antiga de forma mais segura
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "if pgrep -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar'; then pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar'; fi"
-    # Inicie a nova aplicação em background e redirecione logs
+    # Debug: Listar processos Java antes de parar a aplicação
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep java"
+    # Parar a aplicação antiga
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
+    # Debug: Verificar se o processo foi realmente parado
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep java"
+    # Verificar se a porta 8080 está livre
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "netstat -tuln | grep 8080 || true"
+    # Iniciar a nova aplicação em background e redirecionar logs
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"
-    # Verifique as últimas linhas do log para garantir que a aplicação iniciou corretamente
+    # Verificar as últimas linhas do log para garantir que a aplicação iniciou corretamente
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "tail -n 10 /home/ec2-user/app.log"
   environment:
     name: production
     url: http://your-production-url.com
   only:
     - main
+
 
