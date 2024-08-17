@@ -31,7 +31,6 @@ test:
       - target/surefire-reports/
     expire_in: 1 hour
 
-
 deploy:
   stage: deploy
   script:
@@ -41,18 +40,10 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - ls -la target/
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
-    # Debug: Listar processos Java antes de parar a aplicação
+    # Verificar se a aplicação Java está rodando
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep java"
-    # Identificar PID e parar o processo diretamente
-    - |
-      PID=$(ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pgrep -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar'")
-      if [ -n "$PID" ]; then
-        ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "kill -9 $PID"
-      fi
-    # Debug: Verificar se o processo foi realmente parado
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep java"
-    # Verificar se a porta 8080 está livre
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "netstat -tuln | grep 8080 || true"
+    # Parar a aplicação Java se estiver rodando
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
     # Iniciar a nova aplicação em background e redirecionar logs
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"
     # Verificar as últimas linhas do log para garantir que a aplicação iniciou corretamente
@@ -62,6 +53,7 @@ deploy:
     url: http://your-production-url.com
   only:
     - main
+
 
 
 
