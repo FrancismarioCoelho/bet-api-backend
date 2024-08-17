@@ -40,15 +40,18 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - ls -la target/
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
+    # Pare qualquer instância existente da aplicação
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
     # Execute a aplicação em background e redirecione logs
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"
-    # Acompanhe os logs por um tempo limitado
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "timeout 10 tail -n 50 /home/ec2-user/app.log"
+    # Acompanhe os logs em tempo real
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "tail -f /home/ec2-user/app.log"
   environment:
     name: production
     url: http://your-production-url.com
   only:
     - main
+
 
 
 
