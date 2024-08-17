@@ -41,8 +41,10 @@ deploy:
     - ls -la target/
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
     - echo "Arquivo JAR transferido. Iniciando aplicação..."
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"  # Verifique o processo
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
-    - sleep 10  # Aguarde 10 segundos para garantir que o processo seja encerrado
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"  # Verifique se o processo foi encerrado
+    - sleep 10  # Aguarde alguns segundos para garantir que o processo seja encerrado
     - echo "Processo Java encerrado. Iniciando nova instância..."
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"
     - echo "Aplicação iniciada. Acompanhando logs..."
@@ -52,6 +54,7 @@ deploy:
     url: http://your-production-url.com
   only:
     - main
+
 
 
 
