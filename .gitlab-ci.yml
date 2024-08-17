@@ -40,8 +40,8 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - ls -la target/
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
-    # Pare a aplicação antiga
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
+    # Pare a aplicação antiga de forma mais segura
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "if pgrep -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar'; then pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar'; fi"
     # Inicie a nova aplicação em background e redirecione logs
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"
     # Verifique as últimas linhas do log para garantir que a aplicação iniciou corretamente
@@ -51,3 +51,4 @@ deploy:
     url: http://your-production-url.com
   only:
     - main
+
