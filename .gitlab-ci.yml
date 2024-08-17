@@ -40,20 +40,13 @@ deploy:
     - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
     - ls -la target/
     - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/
-    - echo "Arquivo JAR transferido. Iniciando aplicação..."
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"  # Verifique o processo
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "pkill -f 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "ps aux | grep 'java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar' || true"  # Verifique se o processo foi encerrado
-    - sleep 10  # Aguarde alguns segundos para garantir que o processo seja encerrado
-    - echo "Processo Java encerrado. Iniciando nova instância..."
+    # Execute a aplicação em background e redirecione logs
     - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"
-    - echo "Aplicação iniciada. Acompanhando logs..."
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "tail -f /home/ec2-user/app.log"
-  environment:
-    name: production
-    url: http://your-production-url.com
+    # Acompanhe os logs em tempo real
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "tail -f /home/ec2-user/app.log"  
   only:
     - main
+
 
 
 
