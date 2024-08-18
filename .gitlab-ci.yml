@@ -1,45 +1,59 @@
+# Define a imagem base do Docker para o pipeline. Aqui usamos uma imagem Maven com JDK 18.
 image: maven:3.8-openjdk-18
 
+# Define as etapas (stages) do pipeline. Estas serão executadas em ordem sequencial:
+# 1. build: etapa de compilação
+# 2. test: etapa de teste
+# 3. deploy: etapa de implantação
 stages:
   - build
   - test
   - deploy
 
+
+# Configura o cache para acelerar a execução dos pipelines. O cache mantém os arquivos no diretório `.m2/repository/`
+# Isso evita baixar novamente as dependências do Maven em cada execução do pipeline.
 cache:
   paths:
     - .m2/repository/
 
+
+# Definição do job `build`, que será executado na etapa de `build`.
 build:
-  stage: build
-  script:
-    - echo "Compilando o projeto..."
-    - mvn clean package
-    - ls -la target/
-  artifacts:
+  stage: build  # Associa este job à etapa `build`.
+  script:  # Define os comandos a serem executados durante este job.
+    - echo "Compilando o projeto..."  # Exibe uma mensagem indicando o início da compilação.
+    - mvn clean package  # Executa o Maven para limpar os artefatos anteriores e empacotar a aplicação.
+    - ls -la target/  # Lista o conteúdo do diretório `target/` onde o artefato compilado é armazenado.
+  artifacts:  # Define os artefatos que serão salvos após a execução do job.
     paths:
-      - target/
-    expire_in: 1 hour
+      - target/  # Salva todo o conteúdo do diretório `target/` como artefato.
+    expire_in: 1 hour  # Define o tempo de expiração dos artefatos para 1 hora.
 
+
+# Definição do job `test`, que será executado na etapa `test`.
 test:
-  stage: test
-  script:
-    - echo "Executando testes..."
-    - mvn test
-  artifacts:
-    when: always
+  stage: test  # Associa este job à etapa `test`.
+  script:  # Define os comandos a serem executados durante este job.
+    - echo "Executando testes..."  # Exibe uma mensagem indicando o início dos testes.
+    - mvn test  # Executa os testes unitários utilizando o Maven.
+  artifacts:  # Define os artefatos que serão salvos após a execução dos testes.
+    when: always  # Garante que os artefatos serão salvos independentemente de o job passar ou falhar.
     paths:
-      - target/surefire-reports/
-    expire_in: 1 hour
+      - target/surefire-reports/  # Salva os relatórios de teste gerados pelo Surefire Plugin.
+    expire_in: 1 hour  # Define o tempo de expiração dos artefatos para 1 hora.
 
+
+# Definição do job `deploy`, que será executado na etapa `deploy`.
 deploy:
-  stage: deploy
-  script:
-    - mkdir -p ~/.ssh
-    - echo "$id_rsa_gitlab" > ~/.ssh/id_rsa
-    - chmod 600 ~/.ssh/id_rsa
-    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
-    - ls -la target/
-    - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/  
-    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"     
-  only:
-    - main
+  stage: deploy  # Associa este job à etapa `deploy`.
+  script:  # Define os comandos a serem executados durante este job.
+    - mkdir -p ~/.ssh  # Cria o diretório `.ssh` no ambiente se ele não existir.
+    - echo "$id_rsa_gitlab" > ~/.ssh/id_rsa  # Salva a chave privada SSH fornecida como variável de ambiente `id_rsa_gitlab`.
+    - chmod 600 ~/.ssh/id_rsa  # Altera as permissões do arquivo da chave privada para que seja acessível apenas pelo proprietário.
+    - ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts  # Adiciona o host EC2 à lista de hosts conhecidos para evitar prompts interativos durante a conexão.
+    - ls -la target/  # Lista o conteúdo do diretório `target/` para garantir que o artefato está presente antes da implantação.
+    - scp -i ~/.ssh/id_rsa target/betApi-0.0.1-SNAPSHOT.jar ec2-user@$EC2_HOST:/home/ec2-user/  # Usa SCP (Secure Copy) para transferir o artefato para o servidor EC2 remoto.
+    - ssh -i ~/.ssh/id_rsa ec2-user@$EC2_HOST "nohup java -jar /home/ec2-user/betApi-0.0.1-SNAPSHOT.jar > /home/ec2-user/app.log 2>&1 &"  # Executa o JAR no servidor remoto em background e redireciona a saída para um arquivo de log.
+  only:  # Define uma condição para que este job seja executado apenas em determinadas branches.
+    - main  # Este job só será executado quando houver commits na branch `main`.
