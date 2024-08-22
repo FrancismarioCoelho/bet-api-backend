@@ -17,6 +17,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
+    private String name;
+
     @Column(name = "description")
     private String description;
 
@@ -24,8 +27,9 @@ public class Role {
     }
 
     public Role(Role role) {
-        this.id = role.getId();
-        this.description = role.getDescription();
+         id = role.getId();
+         name = role.getName();
+         description = role.getDescription();
     }
 
     public Role(RoleRequestSimpleDTO dto) {
@@ -33,8 +37,9 @@ public class Role {
     }
 
     public Role(RoleRequestDTO dto) {
-        this.id = dto.id();
-        this.description = dto.description();
+         id = dto.id();
+         name = dto.name();
+         description = dto.description();
     }
 
 }
